@@ -11,3 +11,6 @@ Tested on MATLAB 2021b and requires MATLAB's Parallel Computing and Signal Proce
 
 References:
 [1] P. Berens, CircStat: A Matlab Toolbox for Circular Statistics, Journal of Statistical Software, Volume 31, Issue 10, 2009
+
+
+https://zenodo.org/badge/825671073.svg](https://zenodo.org/doi/10.5281/zenodo.14691036)
