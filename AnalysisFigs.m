@@ -198,21 +198,21 @@ PhaseMod_p_nLL=cat(2,PhaseMod.p',PhaseMod_L.p');
 is_good_unit = RecordingInfo.FillQuality<=params_minFillQ & RecordingInfo.RecordingType=='juxta';
 has_Light=~cellfun(@isempty,MeanPLtrigPuffState);
 has_Touch=NTTrigs>=params_minTouchEvents;
-is_vpm=RecordingInfo.DefinedNucleus=='VPM';
-is_pom=RecordingInfo.DefinedNucleus=='POm';
+is_vpm_of_all=RecordingInfo.DefinedNucleus=='VPM';
+is_pom_of_all=RecordingInfo.DefinedNucleus=='POm';
 has_PuffResponse=PuffTrigRateSigIncrease;
 has_TouchResponse=TouchTrigRateSigIncrease;
-any_included=find(is_good_unit & (is_pom | is_vpm));
-vpm=find(is_good_unit & is_vpm);
-vpm_PR_withT=find(is_good_unit & has_PuffResponse & has_Touch & is_vpm);
-vpm_PR_anyT=find(is_good_unit & has_PuffResponse & is_vpm);
-vpm_PR_anyT_withL=find(is_good_unit & has_PuffResponse & has_Light & is_vpm);
-vpm_nPR_withT=find(is_good_unit & ~has_PuffResponse & has_Touch & is_vpm);
-pom=find(is_good_unit & is_pom);
-pom_PR_withT=find(is_good_unit & has_PuffResponse & has_Touch & is_pom);
-pom_PR_anyT=find(is_good_unit & has_PuffResponse & is_pom);
-pom_PR_anyT_withL=find(is_good_unit & has_PuffResponse & has_Light & is_pom);
-pom_nPR_withT=find(is_good_unit & ~has_PuffResponse & has_Touch & is_pom);
+any_included=find(is_good_unit & (is_pom_of_all | is_vpm_of_all));
+vpm=find(is_good_unit & is_vpm_of_all);
+vpm_PR_withT=find(is_good_unit & has_PuffResponse & has_Touch & is_vpm_of_all);
+vpm_PR_anyT=find(is_good_unit & has_PuffResponse & is_vpm_of_all);
+vpm_PR_anyT_withL=find(is_good_unit & has_PuffResponse & has_Light & is_vpm_of_all);
+vpm_nPR_withT=find(is_good_unit & ~has_PuffResponse & has_Touch & is_vpm_of_all);
+pom=find(is_good_unit & is_pom_of_all);
+pom_PR_withT=find(is_good_unit & has_PuffResponse & has_Touch & is_pom_of_all);
+pom_PR_anyT=find(is_good_unit & has_PuffResponse & is_pom_of_all);
+pom_PR_anyT_withL=find(is_good_unit & has_PuffResponse & has_Light & is_pom_of_all);
+pom_nPR_withT=find(is_good_unit & ~has_PuffResponse & has_Touch & is_pom_of_all);
 
 
 fprintf('test interval: %u ms; cell numbers: \n vpm puff responsive and active touches:%u, vpm puff responsive overall:%u , vpm puff responsive and cortical inactivation:%u \n pom puff responsive and active touches:%u, pom puff responsive overall:%u , pom puff responsive and cortical inactivation:%u \n',params_rate_time_after_trig,numel(vpm_PR_withT),numel(vpm_PR_anyT),numel(vpm_PR_anyT_withL),numel(pom_PR_withT),numel(pom_PR_anyT),numel(pom_PR_anyT_withL))
@@ -263,6 +263,17 @@ trigs={trigsPNonwhisking;trigsPWhisking};
 CellSelect={vpm_PR_anyT_withL;pom_PR_anyT_withL};
 trigs={trigsP;trigsPL};
 [mean_fsl_vpmpom_PL,sem_fsl_vpmpom_PL,p_comp_fsl_acrosscond_vpmpom_PL,p_comp_fsl_acrossvpmpom_PL]=compute_first_spike_latency(trigs,DiscreteData,params_max_first_spike_lat,ppms,CellSelect);
+%% export data for clustering
+Cell_numbers=[vpm_PR_withT;pom_PR_withT];
+Puff_PSTH=P_PSTH_instrate(Cell_numbers,:);
+Touch_PSTH=T_PSTH_instrate(Cell_numbers,:);
+Bins_PSTH=-params_psth_time_before_trig:params_psth_binsize:params_psth_time_after_trig;
+Bins_PSTH=Bins_PSTH(1:end-1)+params_psth_binsize/2;
+
+is_vpm=false(size(Cell_numbers));is_vpm(1:numel(vpm_PR_withT))=true;
+is_pom=false(size(Cell_numbers));is_pom(numel(vpmr)+1:end)=true;
+save('vpm_pom_cluster_data.mat','Puff_PSTH','Touch_PSTH',...
+    'Bins_PSTH','Cell_numbers','is_vpm','is_pom')
 
 %% Figure 2
 Fig_no='Fig2_';
