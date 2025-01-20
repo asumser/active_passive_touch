@@ -13,4 +13,4 @@ References:
 [1] P. Berens, CircStat: A Matlab Toolbox for Circular Statistics, Journal of Statistical Software, Volume 31, Issue 10, 2009
 
 
-https://zenodo.org/badge/825671073.svg](https://zenodo.org/doi/10.5281/zenodo.14691036)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14691036.svg)](https://doi.org/10.5281/zenodo.14691036)
